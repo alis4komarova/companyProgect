@@ -12,10 +12,13 @@ public class User {
 
     public User() {}
 
-    public User(String username, String password, String role, int workerId) {
+    public User(int id, String username, String password, String role, int workerId) {
+        this.id = id;
         this.username = username;
         this.password = password;
         this.role = role;
         this.workerId = workerId;
     }
+    public String getRole() { return role; }
+    public int getWorkerId() { return workerId; }
 }
