@@ -14,10 +14,15 @@ public class AuthView {
 
     public void showView() {
         User user = model.getCurrentUser();
-        if (user != null && User.ROLE_ADMIN.equals(user.getRole())) {
-            new AdminView(primaryStage).show();
-        } else if (user != null) {
-            new WorkerView(primaryStage, user.getWorkerId()).show();
+        if (user != null) {
+            primaryStage.close(); // закрываем текущее окно авторизации
+
+            Stage newStage = new Stage();
+            if (User.ROLE_ADMIN.equals(user.getRole())) {
+                new AdminView(newStage, user.getWorkerId()).show();
+            } else {
+                new WorkerView(newStage, user.getWorkerId()).show();
+            }
         } else {
             showAlert("Ошибка: пользователь не найден");
         }

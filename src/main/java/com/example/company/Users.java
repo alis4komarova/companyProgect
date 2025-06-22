@@ -37,6 +37,33 @@ public class Users extends Observable {
         setChanged();
         notifyObservers();
     }
+    public User registerUser(String username, String password, String role, int workerId) {
+        String sql = "INSERT INTO users (username, password, role, worker_id) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = DBConnection.getInstance().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, password);
+            stmt.setString(3, role);
+            stmt.setInt(4, workerId);
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int id = generatedKeys.getInt(1);
+                        return new User(id, username, password, role, workerId);
+                    }
+                }
+            }
+            return null;
+
+        } catch (SQLException e) {
+            System.out.println("Ошибка при добавлении пользователя");
+            return null;
+        }
+    }
 
     private void clearData() {
         userList.clear();
@@ -45,5 +72,10 @@ public class Users extends Observable {
 
     public User getCurrentUser() {
         return currentUser;
+    }
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+        setChanged();
+        notifyObservers();
     }
 }

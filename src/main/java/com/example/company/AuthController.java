@@ -1,9 +1,9 @@
 package com.example.company;
 
-import javafx.geometry.Insets; // для отступов
+import javafx.geometry.*; // для отступов
 import javafx.scene.Scene;  // сцена JavaFX
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane; // сетка для элементов
+import javafx.scene.layout.*; // сетка для элементов и для коробки
 import javafx.stage.Stage;  // окно
 import java.util.Observable;
 import java.util.Observer;
@@ -28,18 +28,33 @@ public class AuthController implements Observer {
         TextField userField = new TextField();
         PasswordField passField = new PasswordField();
         Button loginBtn = new Button("Вход");
+        Button registerBtn = new Button("Регистрация");
 
         grid.add(new Label("Логин:"), 0, 0); // в 0 столб 0 стр
         grid.add(userField, 1, 0);
         grid.add(new Label("Пароль:"), 0, 1);
         grid.add(passField, 1, 1);
-        grid.add(loginBtn, 1, 2);
+        grid.add(loginBtn, 0, 2);
+        grid.add(registerBtn, 1, 2);
 
-        // обработчик событий кнопочки
+        HBox buttonBox = new HBox(10); // горизонтальный контейнер с отступом 10
+        buttonBox.setPadding(new Insets(10, 0, 0, 0));
+        buttonBox.setAlignment(Pos.CENTER); // выравнивание по центру
+        buttonBox.getChildren().addAll(loginBtn, registerBtn);
+        grid.add(buttonBox, 0, 2, 2, 1);
+
+        // обработчик событий кнопочки авт
         loginBtn.setOnAction(e -> {authenticate(
                     userField.getText(),
                     passField.getText()
             );});
+
+        // обработчик событий кнопочки рег
+        registerBtn.setOnAction(e -> {
+            RegisterView registerView = new RegisterView(primaryStage, model);
+            RegisterController registerController = new RegisterController(primaryStage, model, registerView);
+            registerController.show(); // показываем окно регистрации
+        });
 
         Scene scene = new Scene(grid, 300, 150);
         primaryStage.setTitle("Авторизация");
