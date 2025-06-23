@@ -15,7 +15,7 @@ public class Users extends Observable {
         clearData();
         String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, username);
@@ -40,7 +40,7 @@ public class Users extends Observable {
     public User registerUser(String username, String password, String role, int workerId) {
         String sql = "INSERT INTO users (username, password, role, worker_id) VALUES (?, ?, ?, ?)";
 
-        try (Connection conn = DBConnection.getInstance().getConnection();
+        try (Connection conn = DBConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             stmt.setString(1, username);
@@ -77,5 +77,59 @@ public class Users extends Observable {
         this.currentUser = user;
         setChanged();
         notifyObservers();
+    }
+    public boolean isUsernameTaken(String username, int excludedUserId) throws SQLException {
+        String sql = "SELECT id FROM users WHERE username = ? AND id != ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, username);
+            stmt.setInt(2, excludedUserId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                Wrapper wrapper = Wrapper.getInstance();
+                wrapper.loadUsers(rs);
+                return !wrapper.getUsers().isEmpty();
+            }
+        }
+    }
+    public boolean updateUsername(int userId, String newUsername) {
+        try {
+            if (isUsernameTaken(newUsername, userId)) {
+                System.out.println("Логин уже занят");
+                return false;
+            }
+            String updateSql = "UPDATE users SET username = ? WHERE id = ?";
+            try (Connection conn = DBConnection.getConnection();
+                 PreparedStatement updateStmt = conn.prepareStatement(updateSql)) {
+
+                updateStmt.setString(1, newUsername);
+                updateStmt.setInt(2, userId);
+                return updateStmt.executeUpdate() > 0;
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Ошибка при изменении логина");
+            return false;
+        }
+    }
+
+    public boolean updatePassword(int userId, String newPassword) {
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, newPassword);
+            stmt.setInt(2, userId);
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Ошибка при изменении пароля" + e);
+            return false;
+        }
     }
 }

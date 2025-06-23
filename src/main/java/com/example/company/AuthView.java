@@ -19,9 +19,13 @@ public class AuthView {
 
             Stage newStage = new Stage();
             if (User.ROLE_ADMIN.equals(user.getRole())) {
-                new AdminView(newStage, user.getWorkerId()).show();
+                AdminView adminView = new AdminView(newStage, user.getWorkerId());
+                new AdminController(newStage, model, adminView, user.getId());
+                adminView.show();
             } else {
-                new WorkerView(newStage, user.getWorkerId()).show();
+                WorkerView workerView = new WorkerView(newStage, user.getWorkerId());
+                new WorkerController(newStage, model, workerView, user.getId());
+                workerView.show();
             }
         } else {
             showAlert("Ошибка: пользователь не найден");

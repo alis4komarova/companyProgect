@@ -21,4 +21,5 @@ public class User {
     }
     public String getRole() { return role; }
     public int getWorkerId() { return workerId; }
+    public int getId(){ return id;}
 }
