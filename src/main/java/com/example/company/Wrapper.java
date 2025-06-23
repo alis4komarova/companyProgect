@@ -8,9 +8,13 @@ import java.util.List;
 public class Wrapper {
     private static Wrapper instance; //синглтон
     private List<User> users;
+    private List<ExtraWork> extraWorks;
+    private List<TypeWork> typeWorks;
 
     private Wrapper() {
         users = new ArrayList<>();
+        extraWorks = new ArrayList<>();
+        typeWorks = new ArrayList<>();
     }
 
     public static Wrapper getInstance() {
@@ -35,5 +39,19 @@ public class Wrapper {
 
     public List<User> getUsers() {
         return users;
+    }
+    public void loadTypeWorks(ResultSet rs) throws SQLException {
+        typeWorks.clear();
+        while (rs.next()) {
+            typeWorks.add(new TypeWork(
+                    rs.getInt("id"),
+                    rs.getDouble("payment"),
+                    rs.getDouble("long_hours"),
+                    rs.getInt("count_people")
+            ));
+        }
+    }
+    public List<TypeWork> getTypeWorks() {
+        return typeWorks;
     }
 }

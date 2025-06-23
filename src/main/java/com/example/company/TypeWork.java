@@ -13,4 +13,13 @@ public class TypeWork {
         this.longHours = longHours;
         this.countPeople = countPeople;
     }
+    public TypeWork(int id, double payment, double longHours, int countPeople) {
+        this.id = id;
+        this.payment = payment;
+        this.longHours = longHours;
+        this.countPeople = countPeople;
+    }
+    public int getId() { return id; }
+    public double getPayment() { return payment; }
+
 }

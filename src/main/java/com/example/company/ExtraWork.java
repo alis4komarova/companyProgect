@@ -15,6 +15,13 @@ public class ExtraWork {
     public static final String URGENCY_HIGH = "Высокая";
 
     public ExtraWork(){}
+    public ExtraWork(int id, LocalDate dateStart, String urgency, int workerId, int typeId) {
+        this.id = id;
+        this.dateStart = dateStart;
+        this.urgency = urgency;
+        this.workerId = workerId;
+        this.typeId = typeId;
+    }
 
     public ExtraWork(LocalDate dateStart, LocalDate dateEnd, String urgency, double timeHours, int workerId, int typeId) {
         this.dateStart = dateStart;

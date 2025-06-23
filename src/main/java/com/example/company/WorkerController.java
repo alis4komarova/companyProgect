@@ -1,26 +1,34 @@
 package com.example.company;
 
+import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
+
+import java.time.LocalDate;
+import java.util.List;
 
 public class WorkerController {
     private WorkerView view;
     private Users model;
     private int userId;
+    private ExtraWorks extraWorksModel;
 
     public WorkerController(Stage primaryStage, Users model, WorkerView view, int userId) {
         this.view = view;
         this.model = model;
         this.userId = userId;
+        this.extraWorksModel = new ExtraWorks();
         setupEvents();
     }
 
     private void setupEvents() {
         view.getChangePasswordBtn().setOnAction(e -> showChangePasswordDialog());
         view.getChangeUsernameBtn().setOnAction(e -> showChangeUsernameDialog());
+        view.getCreateExtraWorkBtn().setOnAction(e -> showCreateExtraWorkDialog());
     }
 
     private void showChangePasswordDialog() {
@@ -110,6 +118,83 @@ public class WorkerController {
 
         Scene dialogScene = new Scene(grid, 300, 150);
         dialogStage.setTitle("Смена логина");
+        dialogStage.setScene(dialogScene);
+        dialogStage.show();
+    }
+    private void showCreateExtraWorkDialog() {
+        Stage dialogStage = new Stage();
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20));
+        grid.setVgap(10);
+        grid.setHgap(10);
+
+        DatePicker dateStartPicker = new DatePicker();
+        ComboBox<String> urgencyCombo = new ComboBox<>();
+        urgencyCombo.getItems().addAll(
+                ExtraWork.URGENCY_LOW,
+                ExtraWork.URGENCY_MEDIUM,
+                ExtraWork.URGENCY_HIGH
+        );
+
+        ComboBox<TypeWork> typeWorkCombo = new ComboBox<>();
+        List<TypeWork> typeWorks = extraWorksModel.getAvailableTypeWorks();
+        typeWorkCombo.setItems(FXCollections.observableArrayList(typeWorks));
+        typeWorkCombo.setConverter(new StringConverter<TypeWork>() {
+                @Override
+                public String toString(TypeWork typeWork) {
+                    if (typeWork == null) {
+                        return ""; // или "Выберите тип работы"
+                    }
+                    return "Тип" + typeWork.getId() + " (Оплата: " + typeWork.getPayment() + ")";
+                }
+
+                @Override
+                public TypeWork fromString(String string) {
+                    return null;
+                }
+            });
+
+        TextField workerIdField = new TextField();
+        Button createBtn = new Button("Создать");
+        Button cancelBtn = new Button("Отмена");
+
+        grid.add(new Label("Дата начала:"), 0, 0);
+        grid.add(dateStartPicker, 1, 0);
+        grid.add(new Label("Срочность:"), 0, 1);
+        grid.add(urgencyCombo, 1, 1);
+        grid.add(new Label("Тип работы:"), 0, 2);
+        grid.add(typeWorkCombo, 1, 2);
+        grid.add(new Label("ID ответственного:"), 0, 4);
+        grid.add(workerIdField, 1, 4);
+        grid.add(createBtn, 0, 5);
+        grid.add(cancelBtn, 1, 5);
+
+        createBtn.setOnAction(event -> {
+            try {
+                LocalDate dateStart = dateStartPicker.getValue();
+                String urgency = urgencyCombo.getValue();
+                int workerId = Integer.parseInt(workerIdField.getText());
+                TypeWork selectedType = typeWorkCombo.getValue();
+
+                if (selectedType == null) {
+                    showAlert(dialogStage, "Ошибка", "Выберите тип работы", Alert.AlertType.ERROR);
+                    return;
+                }
+                if (extraWorksModel.createExtraWork(dateStart, urgency, workerId, selectedType.getId())) {
+                    showAlert(dialogStage, "Получилось", "Ура! Дополнительная работа создана", Alert.AlertType.INFORMATION);
+                    dialogStage.close();
+                } else {
+                    showAlert(dialogStage, "Ошибка", "Не удалось создать работу", Alert.AlertType.ERROR);
+                }
+            } catch (Exception e) {
+                showAlert(dialogStage, "Ошибка", "Не удалось создать работу", Alert.AlertType.ERROR);
+            }
+        });
+
+        cancelBtn.setOnAction(event -> dialogStage.close());
+
+        Scene dialogScene = new Scene(grid, 400, 300);
+        dialogStage.setTitle("Создание доп. работы");
         dialogStage.setScene(dialogScene);
         dialogStage.show();
     }
