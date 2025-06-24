@@ -35,4 +35,26 @@ public class Participations extends Observable {
             System.out.println("Ошибка при загрузке участий: " + e.getMessage());
         }
     }
+    public boolean deleteParticipation(int workerId, int extraWorkId) {
+        String sql = "DELETE FROM participation WHERE worker_id = ? AND extra_work_id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, workerId);
+            stmt.setInt(2, extraWorkId);
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                // обновляем список после удаления
+                loadParticipationsByWorkerId(workerId);
+                return true;
+            }
+            return false;
+
+        } catch (SQLException e) {
+            System.out.println("Ошибка при удалении участия: " + e.getMessage());
+            return false;
+        }
+    }
 }

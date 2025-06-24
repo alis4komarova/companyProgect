@@ -34,6 +34,7 @@ public class WorkerController {
         view.getChangePasswordBtn().setOnAction(e -> showChangePasswordDialog());
         view.getChangeUsernameBtn().setOnAction(e -> showChangeUsernameDialog());
         view.getChangeQualificationBtn().setOnAction(e -> showChangeQualificationDialog());
+        view.getDeleteParticipationBtn().setOnAction(e -> showDeleteParticipationDialog());
         view.getCreateExtraWorkBtn().setOnAction(e -> showCreateExtraWorkDialog());
         setupParticipationsTable();
     }
@@ -152,7 +153,7 @@ public class WorkerController {
                 @Override
                 public String toString(TypeWork typeWork) {
                     if (typeWork == null) {
-                        return ""; // или "Выберите тип работы"
+                        return "Выберите тип работы";
                     }
                     return "Тип" + typeWork.getId() + " (Оплата: " + typeWork.getPayment() + ")";
                 }
@@ -276,6 +277,46 @@ public class WorkerController {
 
         Scene dialogScene = new Scene(grid, 300, 150);
         dialogStage.setTitle("Обновить квалификацию");
+        dialogStage.setScene(dialogScene);
+        dialogStage.show();
+    }
+    private void showDeleteParticipationDialog() {
+        Stage dialogStage = new Stage();
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20));
+        grid.setVgap(10);
+        grid.setHgap(10);
+
+        TextField workIdField = new TextField();
+        Button deleteBtn = new Button("Удалить");
+        Button cancelBtn = new Button("Отмена");
+
+        grid.add(new Label("ID доп. работы:"), 0, 0);
+        grid.add(workIdField, 1, 0);
+        grid.add(deleteBtn, 0, 1);
+        grid.add(cancelBtn, 1, 1);
+
+        deleteBtn.setOnAction(event -> {
+            try {
+                int extraWorkId = Integer.parseInt(workIdField.getText());
+                User currentUser = model.getCurrentUser();
+
+                if (currentUser != null && participationsModel.deleteParticipation(currentUser.getWorkerId(), extraWorkId)) {
+                    showAlert(dialogStage, "Получилось", "Участие удалено", Alert.AlertType.INFORMATION);
+                    loadParticipations();
+                    dialogStage.close();
+                } else {
+                    showAlert(dialogStage, "Ошибка", "Не удалось удалить участие", Alert.AlertType.ERROR);
+                }
+            } catch (NumberFormatException e) {
+                showAlert(dialogStage, "Ошибка", "Введите корректный ID", Alert.AlertType.ERROR);
+            }
+        });
+
+        cancelBtn.setOnAction(event -> dialogStage.close());
+
+        Scene dialogScene = new Scene(grid, 300, 150);
+        dialogStage.setTitle("Удалить участие");
         dialogStage.setScene(dialogScene);
         dialogStage.show();
     }
