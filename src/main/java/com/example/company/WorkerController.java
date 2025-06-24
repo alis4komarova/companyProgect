@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,12 +17,14 @@ public class WorkerController {
     private Users model;
     private int userId;
     private ExtraWorks extraWorksModel;
+    private Participations participationsModel;
 
     public WorkerController(Stage primaryStage, Users model, WorkerView view, int userId) {
         this.view = view;
         this.model = model;
         this.userId = userId;
         this.extraWorksModel = new ExtraWorks();
+        this.participationsModel = new Participations();
         setupEvents();
     }
 
@@ -29,6 +32,7 @@ public class WorkerController {
         view.getChangePasswordBtn().setOnAction(e -> showChangePasswordDialog());
         view.getChangeUsernameBtn().setOnAction(e -> showChangeUsernameDialog());
         view.getCreateExtraWorkBtn().setOnAction(e -> showCreateExtraWorkDialog());
+        setupParticipationsTable();
     }
 
     private void showChangePasswordDialog() {
@@ -83,6 +87,7 @@ public class WorkerController {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     private void showChangeUsernameDialog() {
         Stage dialogStage = new Stage();
         GridPane grid = new GridPane();
@@ -121,6 +126,7 @@ public class WorkerController {
         dialogStage.setScene(dialogScene);
         dialogStage.show();
     }
+
     private void showCreateExtraWorkDialog() {
         Stage dialogStage = new Stage();
         GridPane grid = new GridPane();
@@ -182,6 +188,7 @@ public class WorkerController {
                 }
                 if (extraWorksModel.createExtraWork(dateStart, urgency, workerId, selectedType.getId())) {
                     showAlert(dialogStage, "Получилось", "Ура! Дополнительная работа создана", Alert.AlertType.INFORMATION);
+                    loadParticipations();
                     dialogStage.close();
                 } else {
                     showAlert(dialogStage, "Ошибка", "Не удалось создать работу", Alert.AlertType.ERROR);
@@ -197,5 +204,37 @@ public class WorkerController {
         dialogStage.setTitle("Создание доп. работы");
         dialogStage.setScene(dialogScene);
         dialogStage.show();
+    }
+
+    private void setupParticipationsTable() {
+        TableColumn<Participation, Integer> workIdCol = new TableColumn<>("ID доп. работы");
+        workIdCol.setCellValueFactory(new PropertyValueFactory<>("extraWorkId"));
+
+        TableColumn<Participation, Double> salaryCol = new TableColumn<>("Доплата");
+        salaryCol.setCellValueFactory(new PropertyValueFactory<>("plusSalary"));
+
+        //новые
+        view.getParticipationsTable().getColumns().clear();
+        view.getParticipationsTable().getColumns().addAll(workIdCol, salaryCol);
+
+        view.getParticipationsTable().setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY); //автоматическое растягивание столбцов
+        view.getParticipationsTable().setVisible(true);
+        loadParticipations();
+    }
+    private void loadParticipations() {
+        User currentUser = model.getCurrentUser();
+        if (currentUser != null && currentUser.getWorkerId() > 0) {
+            participationsModel.loadParticipationsByWorkerId(currentUser.getWorkerId());
+            List<Participation> participations = participationsModel.getParticipationList();
+
+            if (participations.isEmpty()) {
+                view.getNoParticipationsLabel().setVisible(true);
+                view.getParticipationsTable().setVisible(false);
+            } else {
+                view.getNoParticipationsLabel().setVisible(false);
+                view.getParticipationsTable().setVisible(true);
+                view.getParticipationsTable().setItems(FXCollections.observableArrayList(participations));
+            }
+        }
     }
 }

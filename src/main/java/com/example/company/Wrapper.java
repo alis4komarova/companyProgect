@@ -10,11 +10,13 @@ public class Wrapper {
     private List<User> users;
     private List<ExtraWork> extraWorks;
     private List<TypeWork> typeWorks;
+    private List<Participation> participations;
 
     private Wrapper() {
         users = new ArrayList<>();
         extraWorks = new ArrayList<>();
         typeWorks = new ArrayList<>();
+        participations = new ArrayList<>();
     }
 
     public static Wrapper getInstance() {
@@ -53,5 +55,19 @@ public class Wrapper {
     }
     public List<TypeWork> getTypeWorks() {
         return typeWorks;
+    }
+    public void loadParticipations(ResultSet rs) throws SQLException {
+        participations.clear();
+        while (rs.next()) {
+            participations.add(new Participation(
+                    rs.getInt("worker_id"),
+                    rs.getInt("extra_work_id"),
+                    rs.getDouble("plus_salary")
+            ));
+        }
+    }
+
+    public List<Participation> getParticipations() {
+        return participations;
     }
 }
