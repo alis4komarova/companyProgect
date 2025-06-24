@@ -1,7 +1,7 @@
 package com.example.company;
 
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -14,6 +14,10 @@ public class AdminView {
     private Button createWorkerBtn;
     private Button createParticipationBtn;
     private Button updateExtraWorkBtn;
+    private TableView<ExtraWork> extraWorksTable;
+    private Label extraWorksLabel;
+    private Label noExtraWorksLabel;
+    private VBox extraWorksContainer;
 
     public AdminView(Stage primaryStage, int workerId) {
         this.primaryStage = primaryStage;
@@ -24,11 +28,19 @@ public class AdminView {
         this.createWorkerBtn = new Button("Добавить сотрудника");
         this.createParticipationBtn = new Button("Назначить работу");
         this.updateExtraWorkBtn = new Button("Обновить дополнительную работу");
+
+        this.extraWorksLabel = new Label("Незавершенные дополнительные работы");
+        this.extraWorksTable = new TableView<>();
+        this.noExtraWorksLabel = new Label("Все дополнительные работы завершены");
+        noExtraWorksLabel.setVisible(false);
+
+        this.extraWorksContainer = new VBox(5);
+        extraWorksContainer.getChildren().addAll(extraWorksLabel, noExtraWorksLabel, extraWorksTable);
     }
 
     public void show() {
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, createExtraWorkBtn, createTypeWorkBtn, createWorkerBtn, createParticipationBtn, updateExtraWorkBtn);
+        layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, createExtraWorkBtn, createTypeWorkBtn, createWorkerBtn, createParticipationBtn, updateExtraWorkBtn, extraWorksContainer);
 
         Scene scene = new Scene(layout, 400, 500);
         primaryStage.setTitle("Администратор");
@@ -56,5 +68,11 @@ public class AdminView {
     }
     public Button getUpdateExtraWorkBtn() {
         return updateExtraWorkBtn;
+    }
+    public TableView<ExtraWork> getExtraWorksTable() {
+        return extraWorksTable;
+    }
+    public Label getNoExtraWorksLabel() {
+        return noExtraWorksLabel;
     }
 }

@@ -70,4 +70,28 @@ public class Wrapper {
     public List<Participation> getParticipations() {
         return participations;
     }
+    public void loadExtraWorks(ResultSet rs) throws SQLException {
+        extraWorks.clear();
+        while (rs.next()) {
+            ExtraWork work = new ExtraWork(
+                    rs.getInt("id"),
+                    rs.getDate("date_start").toLocalDate(),
+                    rs.getString("urgency"),
+                    rs.getInt("worker_id"),
+                    rs.getInt("type_id")
+            );
+            if (rs.getDate("date_end") != null) {
+                work.setDateEnd(rs.getDate("date_end").toLocalDate());
+            }
+            if (!rs.wasNull()) {
+                work.setTimeHours(rs.getDouble("time_hours"));
+            }
+
+            extraWorks.add(work);
+        }
+    }
+
+    public List<ExtraWork> getExtraWorks() {
+        return extraWorks;
+    }
 }

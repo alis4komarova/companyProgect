@@ -108,4 +108,20 @@ public class ExtraWorks extends Observable {
             return false;
         }
     }
+    public List<ExtraWork> getUnfinishedExtraWorks() {
+        String sql = "SELECT * FROM extra_works WHERE date_end IS NULL";
+
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            Wrapper wrapper = Wrapper.getInstance();
+            wrapper.loadExtraWorks(rs);
+            return wrapper.getExtraWorks();
+
+        } catch (SQLException e) {
+            System.out.println("Ошибка при загрузке незавершенных работ: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
 }

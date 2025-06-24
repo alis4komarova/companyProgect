@@ -39,4 +39,8 @@ public class ExtraWork {
     public double getTimeHours() { return timeHours; }
     public int getWorkerId() { return workerId; }
     public int getTypeId() { return typeId; }
+    public void setId(int id) { this.id = id; }
+    public void setDateEnd(LocalDate dateEnd) { this.dateEnd = dateEnd; }
+    public void setTimeHours(double timeHours) { this.timeHours = timeHours; }
+    public void setWorkerId(int workerId) { this.workerId = workerId; }
 }

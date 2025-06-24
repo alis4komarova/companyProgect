@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -39,6 +40,8 @@ public class AdminController {
         view.getCreateWorkerBtn().setOnAction(e -> showCreateWorkerDialog());
         view.getCreateParticipationBtn().setOnAction(e -> showCreateParticipationDialog());
         view.getUpdateExtraWorkBtn().setOnAction(e -> showUpdateExtraWorkDialog());
+
+        setupExtraWorksTable();
     }
 
     private void showChangePasswordDialog() {
@@ -403,5 +406,39 @@ public class AdminController {
         dialogStage.setTitle("Обновить дополнительную работу");
         dialogStage.setScene(dialogScene);
         dialogStage.show();
+    }
+    private void setupExtraWorksTable() {
+        TableColumn<ExtraWork, Integer> idCol = new TableColumn<>("ID");
+        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
+
+        TableColumn<ExtraWork, LocalDate> dateStartCol = new TableColumn<>("Дата начала");
+        dateStartCol.setCellValueFactory(new PropertyValueFactory<>("dateStart"));
+
+        TableColumn<ExtraWork, String> urgencyCol = new TableColumn<>("Срочность");
+        urgencyCol.setCellValueFactory(new PropertyValueFactory<>("urgency"));
+
+        TableColumn<ExtraWork, Integer> workerIdCol = new TableColumn<>("ID отв.");
+        workerIdCol.setCellValueFactory(new PropertyValueFactory<>("workerId"));
+
+        TableColumn<ExtraWork, Integer> typeIdCol = new TableColumn<>("Тип работы");
+        typeIdCol.setCellValueFactory(new PropertyValueFactory<>("typeId"));
+
+        view.getExtraWorksTable().getColumns().clear();
+        view.getExtraWorksTable().getColumns().addAll(idCol, dateStartCol, urgencyCol, workerIdCol, typeIdCol);
+
+        view.getExtraWorksTable().setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        loadUnfinishedExtraWorks();
+    }
+    private void loadUnfinishedExtraWorks() {
+        List<ExtraWork> unfinishedWorks = extraWorksModel.getUnfinishedExtraWorks();
+
+        if (unfinishedWorks.isEmpty()) {
+            view.getNoExtraWorksLabel().setVisible(true);
+            view.getExtraWorksTable().setVisible(false);
+        } else {
+            view.getNoExtraWorksLabel().setVisible(false);
+            view.getExtraWorksTable().setVisible(true);
+            view.getExtraWorksTable().setItems(FXCollections.observableArrayList(unfinishedWorks));
+        }
     }
 }
