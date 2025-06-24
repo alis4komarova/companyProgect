@@ -13,6 +13,7 @@ public class AdminView {
     private Button createTypeWorkBtn;
     private Button createWorkerBtn;
     private Button createParticipationBtn;
+    private Button updateExtraWorkBtn;
 
     public AdminView(Stage primaryStage, int workerId) {
         this.primaryStage = primaryStage;
@@ -22,13 +23,14 @@ public class AdminView {
         this.createTypeWorkBtn = new Button("Создать тип работы");
         this.createWorkerBtn = new Button("Добавить сотрудника");
         this.createParticipationBtn = new Button("Назначить работу");
+        this.updateExtraWorkBtn = new Button("Обновить дополнительную работу");
     }
 
     public void show() {
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, createExtraWorkBtn, createTypeWorkBtn, createWorkerBtn, createParticipationBtn);
+        layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, createExtraWorkBtn, createTypeWorkBtn, createWorkerBtn, createParticipationBtn, updateExtraWorkBtn);
 
-        Scene scene = new Scene(layout, 400, 300);
+        Scene scene = new Scene(layout, 400, 500);
         primaryStage.setTitle("Администратор");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -51,5 +53,8 @@ public class AdminView {
     }
     public Button getCreateParticipationBtn() {
         return createParticipationBtn;
+    }
+    public Button getUpdateExtraWorkBtn() {
+        return updateExtraWorkBtn;
     }
 }

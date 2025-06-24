@@ -74,4 +74,38 @@ public class ExtraWorks extends Observable {
             return new ArrayList<>();
         }
     }
+    public boolean updateExtraWorkDetails(int workId, LocalDate dateEnd, double timeHours) {
+        String sql = "UPDATE extra_works SET date_end = ?, time_hours = ? WHERE id = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setDate(1, dateEnd != null ? Date.valueOf(dateEnd) : null);
+            stmt.setDouble(2, timeHours);
+            stmt.setInt(3, workId);
+
+            int affectedRows = stmt.executeUpdate();
+            if (affectedRows > 0) {
+                for (ExtraWork work : extraWorkList) {
+                    if (work.getId() == workId) {
+                        work = new ExtraWork(
+                                work.getDateStart(),
+                                dateEnd,
+                                work.getUrgency(),
+                                timeHours,
+                                work.getWorkerId(),
+                                work.getTypeId()
+                        );
+                        setExtraWorkList(new ArrayList<>(extraWorkList));
+                        break;
+                    }
+                }
+                return true;
+            }
+            return false;
+        } catch (SQLException e) {
+            System.out.println("Ошибка при обновлении доп. работы: " + e.getMessage());
+            return false;
+        }
+    }
 }

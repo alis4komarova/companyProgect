@@ -38,6 +38,7 @@ public class AdminController {
         view.getCreateTypeWorkBtn().setOnAction(e -> showCreateTypeWorkDialog());
         view.getCreateWorkerBtn().setOnAction(e -> showCreateWorkerDialog());
         view.getCreateParticipationBtn().setOnAction(e -> showCreateParticipationDialog());
+        view.getUpdateExtraWorkBtn().setOnAction(e -> showUpdateExtraWorkDialog());
     }
 
     private void showChangePasswordDialog() {
@@ -354,6 +355,52 @@ public class AdminController {
 
         Scene dialogScene = new Scene(grid, 300, 200);
         dialogStage.setTitle("Назначить работу");
+        dialogStage.setScene(dialogScene);
+        dialogStage.show();
+    }
+    private void showUpdateExtraWorkDialog() {
+        Stage dialogStage = new Stage();
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20));
+        grid.setVgap(10);
+        grid.setHgap(10);
+
+        TextField workIdField = new TextField();
+        DatePicker dateEndPicker = new DatePicker();
+        TextField timeHoursField = new TextField();
+        Button updateBtn = new Button("Обновить");
+        Button cancelBtn = new Button("Отмена");
+
+        grid.add(new Label("ID работы:"), 0, 0);
+        grid.add(workIdField, 1, 0);
+        grid.add(new Label("Дата окончания:"), 0, 1);
+        grid.add(dateEndPicker, 1, 1);
+        grid.add(new Label("Время (часы):"), 0, 2);
+        grid.add(timeHoursField, 1, 2);
+        grid.add(updateBtn, 0, 3);
+        grid.add(cancelBtn, 1, 3);
+
+        updateBtn.setOnAction(event -> {
+            try {
+                int workId = Integer.parseInt(workIdField.getText());
+                LocalDate dateEnd = dateEndPicker.getValue();
+                double timeHours = Double.parseDouble(timeHoursField.getText());
+
+                if (extraWorksModel.updateExtraWorkDetails(workId, dateEnd, timeHours)) {
+                    showAlert(dialogStage, "Получилось", "Ура! Дополнительная работа обновлена", Alert.AlertType.INFORMATION);
+                    dialogStage.close();
+                } else {
+                    showAlert(dialogStage, "Ошибка", "Не удалось обновить работу", Alert.AlertType.ERROR);
+                }
+            } catch (NumberFormatException e) {
+                showAlert(dialogStage, "Ошибка", "Некорректные данные", Alert.AlertType.ERROR);
+            }
+        });
+
+        cancelBtn.setOnAction(event -> dialogStage.close());
+
+        Scene dialogScene = new Scene(grid, 350, 200);
+        dialogStage.setTitle("Обновить дополнительную работу");
         dialogStage.setScene(dialogScene);
         dialogStage.show();
     }
