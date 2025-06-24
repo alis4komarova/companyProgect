@@ -8,7 +8,8 @@ import java.sql.*;
 public class Participations extends Observable {
     private List<Participation> participationList = new ArrayList<>();
 
-    public Participations() {}
+    public Participations() {
+    }
 
     public List<Participation> getParticipationList() {
         return participationList;
@@ -19,6 +20,7 @@ public class Participations extends Observable {
         setChanged();
         notifyObservers();
     }
+
     public void loadParticipationsByWorkerId(int workerId) {
         String sql = "SELECT * FROM participation WHERE worker_id = ?";
 
@@ -35,6 +37,7 @@ public class Participations extends Observable {
             System.out.println("Ошибка при загрузке участий: " + e.getMessage());
         }
     }
+
     public boolean deleteParticipation(int workerId, int extraWorkId) {
         String sql = "DELETE FROM participation WHERE worker_id = ? AND extra_work_id = ?";
 
@@ -54,6 +57,23 @@ public class Participations extends Observable {
 
         } catch (SQLException e) {
             System.out.println("Ошибка при удалении участия: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean createParticipation(int workerId, int extraWorkId, double plusSalary) {
+        String sql = "INSERT INTO participation (worker_id, extra_work_id, plus_salary) VALUES (?, ?, ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, workerId);
+            stmt.setInt(2, extraWorkId);
+            stmt.setDouble(3, plusSalary);
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Ошибка при создании участия: " + e.getMessage());
             return false;
         }
     }

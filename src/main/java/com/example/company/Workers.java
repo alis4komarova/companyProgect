@@ -47,4 +47,25 @@ public class Workers extends Observable {
             return false;
         }
     }
+    public boolean createWorker(String lastName, String firstName, String secondName,
+                                 String post, String qualification, double salary) {
+        String sql = "INSERT INTO workers (last_name, first_name, second_name, post, qualification, salary) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, lastName);
+            stmt.setString(2, firstName);
+            stmt.setString(3, secondName);
+            stmt.setString(4, post);
+            stmt.setString(5, qualification);
+            stmt.setDouble(6, salary);
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.out.println("Ошибка при создании сотрудника: " + e.getMessage());
+            return false;
+        }
+    }
 }
