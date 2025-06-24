@@ -40,6 +40,7 @@ public class AdminController {
         view.getCreateWorkerBtn().setOnAction(e -> showCreateWorkerDialog());
         view.getCreateParticipationBtn().setOnAction(e -> showCreateParticipationDialog());
         view.getUpdateExtraWorkBtn().setOnAction(e -> showUpdateExtraWorkDialog());
+        view.getDeleteExtraWorkBtn().setOnAction(e -> showDeleteExtraWorkDialog());
 
         setupExtraWorksTable();
     }
@@ -440,5 +441,44 @@ public class AdminController {
             view.getExtraWorksTable().setVisible(true);
             view.getExtraWorksTable().setItems(FXCollections.observableArrayList(unfinishedWorks));
         }
+    }
+    private void showDeleteExtraWorkDialog() {
+        Stage dialogStage = new Stage();
+        GridPane grid = new GridPane();
+        grid.setPadding(new Insets(20));
+        grid.setVgap(10);
+        grid.setHgap(10);
+
+        TextField workIdField = new TextField();
+        Button deleteBtn = new Button("Удалить");
+        Button cancelBtn = new Button("Отмена");
+
+        grid.add(new Label("ID работы:"), 0, 0);
+        grid.add(workIdField, 1, 0);
+        grid.add(deleteBtn, 0, 1);
+        grid.add(cancelBtn, 1, 1);
+
+        deleteBtn.setOnAction(event -> {
+            try {
+                int workId = Integer.parseInt(workIdField.getText());
+
+                if (extraWorksModel.deleteExtraWork(workId)) {
+                    showAlert(dialogStage, "Получилось", "Работа удалена", Alert.AlertType.INFORMATION);
+                    loadUnfinishedExtraWorks(); // обновляем таблицу
+                    dialogStage.close();
+                } else {
+                    showAlert(dialogStage, "Ошибка", "Не удалось удалить работу", Alert.AlertType.ERROR);
+                }
+            } catch (NumberFormatException e) {
+                showAlert(dialogStage, "Ошибка", "Введите корректный ID", Alert.AlertType.ERROR);
+            }
+        });
+
+        cancelBtn.setOnAction(event -> dialogStage.close());
+
+        Scene dialogScene = new Scene(grid, 300, 150);
+        dialogStage.setTitle("Удалить работу");
+        dialogStage.setScene(dialogScene);
+        dialogStage.show();
     }
 }

@@ -124,4 +124,31 @@ public class ExtraWorks extends Observable {
             return new ArrayList<>();
         }
     }
+    public boolean deleteExtraWork(int workId) {
+        String sql = "DELETE FROM extra_works WHERE id = ? AND date_end IS NULL";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, workId);
+            int affectedRows = stmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                // обновляем список работ после удаления
+                List<ExtraWork> updatedWorks = new ArrayList<>();
+                for (ExtraWork work : extraWorkList) {
+                    if (work.getId() != workId) {
+                        updatedWorks.add(work);
+                    }
+                }
+                setExtraWorkList(updatedWorks);
+                return true;
+            }
+            return false;
+
+        } catch (SQLException e) {
+            System.out.println("Ошибка при удалении работы: " + e.getMessage());
+            return false;
+        }
+    }
 }

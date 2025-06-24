@@ -18,6 +18,7 @@ public class AdminView {
     private Label extraWorksLabel;
     private Label noExtraWorksLabel;
     private VBox extraWorksContainer;
+    private Button deleteExtraWorkBtn;
 
     public AdminView(Stage primaryStage, int workerId) {
         this.primaryStage = primaryStage;
@@ -28,6 +29,7 @@ public class AdminView {
         this.createWorkerBtn = new Button("Добавить сотрудника");
         this.createParticipationBtn = new Button("Назначить работу");
         this.updateExtraWorkBtn = new Button("Обновить дополнительную работу");
+        this.deleteExtraWorkBtn = new Button("Удалить дополнительную работу");
 
         this.extraWorksLabel = new Label("Незавершенные дополнительные работы");
         this.extraWorksTable = new TableView<>();
@@ -40,7 +42,7 @@ public class AdminView {
 
     public void show() {
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, createExtraWorkBtn, createTypeWorkBtn, createWorkerBtn, createParticipationBtn, updateExtraWorkBtn, extraWorksContainer);
+        layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, createExtraWorkBtn, createTypeWorkBtn, createWorkerBtn, createParticipationBtn, updateExtraWorkBtn, deleteExtraWorkBtn, extraWorksContainer);
 
         Scene scene = new Scene(layout, 400, 500);
         primaryStage.setTitle("Администратор");
@@ -74,5 +76,8 @@ public class AdminView {
     }
     public Label getNoExtraWorksLabel() {
         return noExtraWorksLabel;
+    }
+    public Button getDeleteExtraWorkBtn() {
+        return deleteExtraWorkBtn;
     }
 }
