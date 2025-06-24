@@ -11,6 +11,7 @@ public class WorkerView {
     private Stage primaryStage;
     private Button changePasswordBtn;
     private Button changeUsernameBtn;
+    private Button changeQualificationBtn;
     private Button createExtraWorkBtn;
     private TableView<Participation> participationsTable;
     private Label participationsLabel;
@@ -21,6 +22,7 @@ public class WorkerView {
         this.primaryStage = primaryStage;
         this.changePasswordBtn = new Button("Сменить пароль");
         this.changeUsernameBtn = new Button("Сменить логин");
+        this.changeQualificationBtn = new Button("Обновить квалификацию");
         this.createExtraWorkBtn = new Button("Создать дополнительную работу");
         this.participationsLabel = new Label("Мои дополнительные работы:");
         this.participationsTable = new TableView<>();
@@ -33,7 +35,7 @@ public class WorkerView {
 
     public void show() {
         VBox layout = new VBox(10);
-        layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, createExtraWorkBtn, participationsContainer);
+        layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, changeQualificationBtn, createExtraWorkBtn, participationsContainer);
 
         Scene scene = new Scene(layout, 500, 400);
         primaryStage.setTitle("Сотрудник");
@@ -55,5 +57,8 @@ public class WorkerView {
     }
     public Label getNoParticipationsLabel() {
         return noParticipationsLabel;
+    }
+    public Button getChangeQualificationBtn() {
+        return changeQualificationBtn;
     }
 }
