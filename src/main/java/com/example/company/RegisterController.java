@@ -33,6 +33,9 @@ public class RegisterController {
 
         Button registerBtn = new Button("Зарегистрироваться");
         Button backBtn = new Button("Назад");
+        String redButtonStyle = "-fx-background-color: #FF0000; -fx-text-fill: white; -fx-font-weight: bold;";
+        backBtn.setStyle(redButtonStyle);
+        registerBtn.setStyle(redButtonStyle);
 
         grid.add(new Label("Логин:"), 0, 0);
         grid.add(usernameField, 1, 0);
