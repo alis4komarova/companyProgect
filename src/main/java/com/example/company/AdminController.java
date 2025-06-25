@@ -196,6 +196,7 @@ public class AdminController {
                 }
                 if (extraWorksModel.createExtraWork(dateStart, urgency, workerId, selectedType.getId())) {
                     showAlert(dialogStage, "Получилось", "Ура! Дополнительная работа создана", Alert.AlertType.INFORMATION);
+                    loadUnfinishedExtraWorks();
                     dialogStage.close();
                 } else {
                     showAlert(dialogStage, "Ошибка", "Не удалось создать работу", Alert.AlertType.ERROR);
@@ -392,6 +393,7 @@ public class AdminController {
 
                 if (extraWorksModel.updateExtraWorkDetails(workId, dateEnd, timeHours)) {
                     showAlert(dialogStage, "Получилось", "Ура! Дополнительная работа обновлена", Alert.AlertType.INFORMATION);
+                    loadUnfinishedExtraWorks();
                     dialogStage.close();
                 } else {
                     showAlert(dialogStage, "Ошибка", "Не удалось обновить работу", Alert.AlertType.ERROR);
