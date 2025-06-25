@@ -29,6 +29,9 @@ public class AuthController implements Observer {
         PasswordField passField = new PasswordField();
         Button loginBtn = new Button("Вход");
         Button registerBtn = new Button("Регистрация");
+        String redButtonStyle = "-fx-background-color: #FF0000; -fx-text-fill: white; -fx-font-weight: bold;";
+        loginBtn.setStyle(redButtonStyle);
+        registerBtn.setStyle(redButtonStyle);
 
         grid.add(new Label("Логин:"), 0, 0); // в 0 столб 0 стр
         grid.add(userField, 1, 0);
