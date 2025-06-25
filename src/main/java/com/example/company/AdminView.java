@@ -32,6 +32,7 @@ public class AdminView {
         this.deleteExtraWorkBtn = new Button("Удалить дополнительную работу");
 
         this.extraWorksLabel = new Label("Незавершенные дополнительные работы");
+        this.extraWorksLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         this.extraWorksTable = new TableView<>();
         this.noExtraWorksLabel = new Label("Все дополнительные работы завершены");
         noExtraWorksLabel.setVisible(false);
@@ -41,6 +42,7 @@ public class AdminView {
     }
 
     public void show() {
+        styleButtons();
         VBox layout = new VBox(10);
         layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, createExtraWorkBtn, createTypeWorkBtn, createWorkerBtn, createParticipationBtn, updateExtraWorkBtn, deleteExtraWorkBtn, extraWorksContainer);
 
@@ -48,6 +50,17 @@ public class AdminView {
         primaryStage.setTitle("Администратор");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+    private void styleButtons() {
+        String buttonStyle = "-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;";
+        changePasswordBtn.setStyle(buttonStyle);
+        changeUsernameBtn.setStyle(buttonStyle);
+        createExtraWorkBtn.setStyle(buttonStyle);
+        createTypeWorkBtn.setStyle(buttonStyle);
+        createWorkerBtn.setStyle(buttonStyle);
+        createParticipationBtn.setStyle(buttonStyle);
+        updateExtraWorkBtn.setStyle(buttonStyle);
+        deleteExtraWorkBtn.setStyle(buttonStyle);
     }
 
     public Button getChangePasswordBtn() {

@@ -27,6 +27,7 @@ public class WorkerView {
         this.createExtraWorkBtn = new Button("Создать дополнительную работу");
         this.deleteParticipationBtn = new Button("Удалить участие");
         this.participationsLabel = new Label("Мои дополнительные работы");
+        this.participationsLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
         this.participationsTable = new TableView<>();
         this.noParticipationsLabel = new Label("Вы не участвуете в дополнительных работах");
 
@@ -36,6 +37,7 @@ public class WorkerView {
     }
 
     public void show() {
+        styleButtons();
         VBox layout = new VBox(10);
         layout.getChildren().addAll(changePasswordBtn, changeUsernameBtn, changeQualificationBtn, createExtraWorkBtn, deleteParticipationBtn, participationsContainer);
 
@@ -43,6 +45,14 @@ public class WorkerView {
         primaryStage.setTitle("Сотрудник");
         primaryStage.setScene(scene);
         primaryStage.show();
+    }
+    private void styleButtons() {
+        String buttonStyle = "-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;";
+        changePasswordBtn.setStyle(buttonStyle);
+        changeUsernameBtn.setStyle(buttonStyle);
+        changeQualificationBtn.setStyle(buttonStyle);
+        createExtraWorkBtn.setStyle(buttonStyle);
+        deleteParticipationBtn.setStyle(buttonStyle);
     }
 
     public Button getChangePasswordBtn() {
